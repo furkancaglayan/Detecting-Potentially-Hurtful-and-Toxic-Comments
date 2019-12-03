@@ -6,12 +6,14 @@ In this project blabla
 
 
 
+
+
 ## 2. Blogs
 We documented our progress under the publication of [bbm406f19](https://medium.com/bbm406f19) on medium. You can read them to see our thinking processes. Don't forget to give claps :innocent:
 
 
 
-[__Week 1__](https://medium.com/bbm406f19/week-1-detecting-potentially-hurtful-and-toxic-comments-5eb17de9e5d8): Introduction to problem and dataset, short description of possible methods to use. 
+[__Week 1__](https://medium.com/bbm406f19/week-1-detecting-potentially-hurtful-and-toxic-comments-5eb17de9e5d8): *Introduction to problem and dataset, short description of possible methods to use.* 
 
 
 __Week 2:__ TBD
