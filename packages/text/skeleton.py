@@ -27,6 +27,7 @@ class Skeleton(object):
             self.text = method(**args)
         self.df[self.column_name] = self.text
         self.df.dropna(inplace=True, how="any")
+        self.data_size = len(self.df)
 
     def classify(self, classifiers, keys: list):
         self.classifiers = classifiers
