@@ -19,11 +19,13 @@ def sample(data: pd.DataFrame = None, key_name='comment_text', step=0, total_ste
     for i in range(n):
         random_int = int(random.randrange(0, l - 1))
         row = data.iloc[random_int]
+        if row is None:
+            continue
         print("Sample {}: \n".format(i + 1) + row)
     return data
 
 
-def trim_corpus(data: pd.DataFrame = None, key_name='comment_text', step=0, total_steps=0, n=25):
+def trim_corpus(data: pd.DataFrame = None, key_name='comment_text', step=0, total_steps=0, n=5):
     print("[Step {}/{}   Trimming data...]\n".format(step, total_steps))
     for i, row in enumerate(data):
         if len(row.split(' ')) <= n:
@@ -95,7 +97,6 @@ def clean_text(data: pd.DataFrame = None, step=0, total_steps=0):
 def clean_sample(txt="You are mentioned in Wikipedia:Arbitration/Requests/Clarification#Request_for_clarification"
                      ":_Wikipedia:Arbitration/Requests/Case/Abd-William_M._Connolley. Thought you'd like to know. "
                      "Happy New Year, may it surpass the old!"):
-    print(txt)
     txt = str(txt).replace('\n', ' ')
     txt = str(txt).replace('\'m', ' am')
     txt = txt.replace('n\'t', ' not')
@@ -127,4 +128,4 @@ def clean_sample(txt="You are mentioned in Wikipedia:Arbitration/Requests/Clarif
     txt = txt.replace('+', '')
     txt = txt.replace('|', ' ')
 
-    print(txt.lower().strip())
+    return txt.lower().strip()
