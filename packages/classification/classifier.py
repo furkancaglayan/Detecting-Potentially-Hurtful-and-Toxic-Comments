@@ -109,7 +109,6 @@ class AveragingEstimator(_Classifier):
         super().predict(key, test_X, test_y)
 
 
-<<<<<<< Updated upstream
 class _AdaBoostClassifier(_Classifier):
     def __init__(self, name, n_estimators):
         super().__init__(name)
@@ -133,18 +132,18 @@ class AdaBoostDecisionTree(_AdaBoostClassifier):
 class AdaBoostNaiveBayes(_AdaBoostClassifier):
     def __init__(self, n_estimators=100):
         self.estimator = MultinomialNB(fit_prior=True, class_prior=None)
-        super().__init__("AdaBoost Classifier, MN Naive Bayes with {} estimators".format(n_estimators),n_estimators)
+        super().__init__("AdaBoost Classifier, MN Naive Bayes with {} estimators".format(n_estimators), n_estimators)
 
 
 class AdaBoostSVM(_AdaBoostClassifier):
     def __init__(self, n_estimators=100):
         self.estimator = SVC(gamma='auto')
-        super().__init__("AdaBoost Classifier, SVM with {} estimators".format(n_estimators),n_estimators)
+        super().__init__("AdaBoost Classifier, SVM with {} estimators".format(n_estimators), n_estimators)
 
-=======
+
 class BoostingDecisionTree(_Classifier):
-    def __init__(self,base_estimator:_Classifier):
-        super().__init__("AdaBoost Classifier "+base_estimator.name)
+    def __init__(self, base_estimator: _Classifier):
+        super().__init__("AdaBoost Classifier " + base_estimator.name)
         self.estimator = base_estimator
         self.ensemble = AdaBoostClassifier(base_estimator=self.estimator.estimator, n_estimators=100, algorithm="SAMME")
 
@@ -154,4 +153,3 @@ class BoostingDecisionTree(_Classifier):
     def predict(self, key, test_X, test_y):
         self.predictions[key] = self.ensemble.predict(test_X)
         super().predict(key, test_X, test_y)
->>>>>>> Stashed changes

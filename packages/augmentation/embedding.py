@@ -1,5 +1,6 @@
 import gensim
 import nltk
+from gensim.models import Word2Vec
 from nltk.data import find
 import packages.text.textutilities as utilities
 from gensim.models.phrases import Phrases, Phraser
@@ -7,12 +8,15 @@ import multiprocessing
 
 
 class EmbeddingAugmentation(object):
-    def __init__(self):
-        nltk.download('word2vec_sample')
-        self.resource = str(find('models/word2vec_sample/pruned.word2vec.txt'))
-        self.model = gensim.models.KeyedVectors.load_word2vec_format(self.resource, binary=False)
-        self.vocabulary = self.model.vocab
+    def __init__(self, load_path=None):
+        if load_path is None:
+            nltk.download('word2vec_sample')
+            self.resource = str(find('models/word2vec_sample/pruned.word2vec.txt'))
+            self.model = gensim.models.KeyedVectors.load_word2vec_format(self.resource, binary=False)
+        else:
+            self.model = Word2Vec.load(load_path)
 
+        self.vocabulary = self.model.wv.vocab
         self.trained_model = None
 
     def get_similar_words(self, word, n=3):
@@ -76,11 +80,23 @@ class EmbeddingAugmentation(object):
         self.trained_model.train(sentences, total_examples=self.trained_model.corpus_count, epochs=30, report_delay=1)
         print("[Training is done]")
 
-    def save_trained_model(self,name="word2vec"):
+    def save_trained_model(self, name="word2vec"):
         if self.trained_model is None:
             print("[Model is empty]")
             return
         self.trained_model.save("{}.model".format(name))
+
+    def replace_sentence_with_top(self, sentence: str):
+        words = sentence.split(' ')
+        ret = ""
+        for word in words:
+            replacement = self.get_similar_words(word, n=1)
+            if replacement is not None:
+                ret += replacement[0] + " "
+            else:
+                ret += word+" "
+
+        return ret.strip()
 
     def populate(self, keys, how):
         pass
