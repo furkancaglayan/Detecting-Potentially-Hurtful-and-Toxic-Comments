@@ -60,6 +60,10 @@ class DecisionTree(_NonEnsembleClassifier):
             ('clf', OneVsRestClassifier(DecisionTreeClassifier(max_depth=4))),
         ], verbose=False)
 
+    def predict(self, key, test_X, test_y):
+        self.predictions[key] = self.estimator.predict(test_X)
+        super().predict(key, test_X, test_y)
+
 
 class NaiveBayes(_NonEnsembleClassifier):
     def __init__(self):
@@ -69,6 +73,10 @@ class NaiveBayes(_NonEnsembleClassifier):
             ('clf', OneVsRestClassifier(MultinomialNB(fit_prior=True, class_prior=None))),
         ], verbose=False)
 
+    def predict(self, key, test_X, test_y):
+        self.predictions[key] = self.estimator.predict(test_X)
+        super().predict(key, test_X, test_y)
+
 
 class SVM(_NonEnsembleClassifier):
     def __init__(self):
@@ -77,6 +85,10 @@ class SVM(_NonEnsembleClassifier):
             ('vectorizer', TfidfVectorizer(stop_words=ENGLISH_STOP_WORDS)),
             ('clf', OneVsRestClassifier(SVC(gamma='auto'))),
         ], verbose=False)
+
+    def predict(self, key, test_X, test_y):
+        self.predictions[key] = self.estimator.predict(test_X)
+        super().predict(key, test_X, test_y)
 
 
 class AveragingEstimator(_Classifier):
@@ -97,6 +109,7 @@ class AveragingEstimator(_Classifier):
         super().predict(key, test_X, test_y)
 
 
+<<<<<<< Updated upstream
 class _AdaBoostClassifier(_Classifier):
     def __init__(self, name, n_estimators):
         super().__init__(name)
@@ -128,3 +141,17 @@ class AdaBoostSVM(_AdaBoostClassifier):
         self.estimator = SVC(gamma='auto')
         super().__init__("AdaBoost Classifier, SVM with {} estimators".format(n_estimators),n_estimators)
 
+=======
+class BoostingDecisionTree(_Classifier):
+    def __init__(self,base_estimator:_Classifier):
+        super().__init__("AdaBoost Classifier "+base_estimator.name)
+        self.estimator = base_estimator
+        self.ensemble = AdaBoostClassifier(base_estimator=self.estimator.estimator, n_estimators=100, algorithm="SAMME")
+
+    def fit(self, X, y):
+        self.ensemble.fit(X, y)
+
+    def predict(self, key, test_X, test_y):
+        self.predictions[key] = self.ensemble.predict(test_X)
+        super().predict(key, test_X, test_y)
+>>>>>>> Stashed changes
