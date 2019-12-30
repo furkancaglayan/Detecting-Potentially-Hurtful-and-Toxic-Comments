@@ -1,4 +1,5 @@
 from packages.text.textutilities import load_data
+import time
 
 
 class Skeleton(object):
@@ -11,6 +12,7 @@ class Skeleton(object):
         self.classifiers = []
         self.progress = ""
         self.data_size = 0
+        self.start_time = time.time()
 
     def _create(self, dataframe_path, step, total_steps, related_column='comment_text'):
         self.df_path = dataframe_path
@@ -45,6 +47,7 @@ class Skeleton(object):
             self.progress += clf.debug()
 
     def save_progress(self, path):
+        self.progress+="\n\n-----------End------------\nTime taken: {} seconds".format(time.time()-self.start_time)
         summary_out = open(path, "w")
         summary_out.write(self.progress)
         summary_out.close()

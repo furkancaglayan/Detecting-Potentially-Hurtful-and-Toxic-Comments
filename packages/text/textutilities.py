@@ -25,14 +25,6 @@ def sample(data: pd.DataFrame = None, key_name='comment_text', step=0, total_ste
     return data
 
 
-def trim_corpus(data: pd.DataFrame = None, key_name='comment_text', step=0, total_steps=0, n=5):
-    print("[Step {}/{}   Trimming data...]\n".format(step, total_steps))
-    for i, row in enumerate(data):
-        if len(row.split(' ')) <= n:
-            data.iloc[i] = None
-    return data
-
-
 def clean_text(data: pd.DataFrame = None, step=0, total_steps=0):
     """
     Takes the related dataframe *column* and removes punctuation from it.
@@ -94,9 +86,7 @@ def clean_text(data: pd.DataFrame = None, step=0, total_steps=0):
     return data
 
 
-def clean_sample(txt="You are mentioned in Wikipedia:Arbitration/Requests/Clarification#Request_for_clarification"
-                     ":_Wikipedia:Arbitration/Requests/Case/Abd-William_M._Connolley. Thought you'd like to know. "
-                     "Happy New Year, may it surpass the old!"):
+def clean_sample(txt="Sample Text"):
     txt = str(txt).replace('\n', ' ')
     txt = str(txt).replace('\'m', ' am')
     txt = txt.replace('n\'t', ' not')
