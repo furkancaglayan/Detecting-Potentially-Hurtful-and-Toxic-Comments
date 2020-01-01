@@ -6,20 +6,40 @@ class Skeleton(object):
     def __init__(self):
         self.df_path = ""
         self.df = None
-        self.column_name = ""
+        self.column_name1 = ""
+        self.column_name2 = ""
+        self.column_name3 = ""
+        self.column_name4 = ""
+        self.column_name5 = ""
+        self.column_name6 = ""
+        self.column_name7 = ""
+
         self.text = None
+        self.tags = None
         self.methods = []
         self.classifiers = []
         self.progress = ""
         self.data_size = 0
         self.start_time = time.time()
 
-    def _create(self, dataframe_path, step, total_steps, related_column='comment_text'):
+    def _create(self, dataframe_path, step, total_steps,
+                related_column1='comment_text', related_column2 = 'toxic',
+                related_column3 = 'severe_toxic', related_column4 = 'obscene', related_column5 = 'threat',
+                related_column6 = 'insult', related_column7 = 'identity_hate'
+               ):
+        
         self.df_path = dataframe_path
         self.df = load_data(dataframe_path, step, total_steps)
-        self.column_name = related_column
+        self.column_name1 = related_column1
+        self.column_name2 = related_column2
+        self.column_name3 = related_column3
+        self.column_name4 = related_column4
+        self.column_name5 = related_column5
+        self.column_name6 = related_column6
+        self.column_name7 = related_column7
         self.data_size = len(self.df)
-        self.text = self.df[related_column]
+        self.text = self.df[related_column1,related_column2,related_column3,related_column4,related_column5,related_column6,related_column7]
+        self.tags = self.df[related_column2,related_column3,related_column4,related_column5,related_column6,related_column7]
 
     def build(self, methods, df_path):
         self.methods = methods
@@ -27,7 +47,9 @@ class Skeleton(object):
         for i, method in enumerate(methods):
             args = {'data': self.text, 'step': i + 2, 'total_steps': len(methods) + 1}
             self.text = method(**args)
-        self.df[self.column_name] = self.text
+        self.df[self.column_name1] = self.text
+        self.df[self.column_name2,self.column_name3,self.column_name4,self.column_name5,self.column_name6,self.column_name7 ] = self.tags
+        
         self.df.dropna(inplace=True, how="any")
         self.data_size = len(self.df)
 
