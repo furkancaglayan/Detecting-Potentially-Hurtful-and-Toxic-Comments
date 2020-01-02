@@ -1,5 +1,4 @@
-import pandas
-
+import pandas as pd
 from packages.text.textutilities import load_data
 import time
 
@@ -32,6 +31,7 @@ class Skeleton(object):
             self.df = utility.apply(**args)
         self.df.dropna(inplace=True, how="any")
         self.data_size = len(self.df)
+        print("Skeleton build is done!")
 
     def classify(self, classifiers):
         self.classifiers = classifiers
@@ -64,3 +64,4 @@ class Skeleton(object):
         info = ""
         for key in self.keys:
             info += "{}: {} samples\n".format(key, len(self.df.loc[self.df[key] == 1]))
+        return info
