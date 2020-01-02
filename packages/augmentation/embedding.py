@@ -86,17 +86,25 @@ class EmbeddingAugmentation(object):
             return
         self.trained_model.save("{}.model".format(name))
 
-    def replace_sentence_with_top(self, sentence: str):
-        words = sentence.split(' ')
-        ret = ""
-        for word in words:
-            replacement = self.get_similar_words(word, n=1)
-            if replacement is not None:
-                ret += replacement[0] + " "
-            else:
-                ret += word+" "
+    def replace_sentence(self, sentence: str, n=3):
+        try:
+            ret = []
+            words = sentence.split(' ')
+            l = len(words)
 
-        return ret.strip()
+            for i in range(n):
+                augmented_sentence=""
+                for j in range(l):
+                    pass
 
-    def populate(self, keys, how):
-        pass
+
+    def populate(self, keys, data, target, random, augmentation_per_sentence, text_id="comment_text"):
+        for key in keys:
+            df = data[key]
+            diff = target - len(df)
+            selection_count = int(diff / augmentation_per_sentence)
+            # select sentences to augment
+            random_selections = df.sample(n=selection_count, random_state=random)
+            for row in random_selections:
+                text = row[text_id]
+                augmentations = self.replace_sentence(text, n=augmentation_per_sentence)
