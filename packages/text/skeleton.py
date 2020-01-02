@@ -59,3 +59,8 @@ class Skeleton(object):
         for each_key in self.keys:
             df_splits[each_key] = self.df[self.df[each_key] == 1].sample(n=n_category, random_state=self.random_state)
         return df_splits
+
+    def info(self):
+        info = ""
+        for key in self.keys:
+            info += "{}: {} samples\n".format(key, len(self.df.loc[self.df[key] == 1]))
