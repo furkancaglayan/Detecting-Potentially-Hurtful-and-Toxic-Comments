@@ -63,5 +63,10 @@ class Skeleton(object):
     def info(self):
         info = ""
         for key in self.keys:
+            print(key)
             info += "{}: {} samples\n".format(key, len(self.df.loc[self.df[key] == 1]))
+#         for i in range(len(self.keys[-1:]):
+#             if(self.keys[i] == 0 & self.keys[i+1] == 0 & self.keys[i+2] == 0 & self.keys[i+3] == 0 & self.keys[i+4] == 0 
+#                & self.keys[i+5] == 0 & self.keys[i+6] == 0):
+#                    info += "{}: {} samples\n".format(self.keys[-1:], len(self.df.loc[self.df[self.keys[:-1]] == 0]))
         return info
