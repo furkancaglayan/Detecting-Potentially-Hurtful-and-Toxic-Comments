@@ -33,7 +33,7 @@ class EmbeddingAugmentation(object):
             print(key_error)
             return None
 
-    def get_similar_words_trained(self, word, n=3):
+    def get_similar_words_trained(self, word, n=1):
         """
         Get n similar words from the newly trained model.
         :param word: Word to find similar words to.
@@ -86,31 +86,52 @@ class EmbeddingAugmentation(object):
             return
         self.trained_model.save("{}.model".format(name))
 
-    def replace_sentence(self, sentence: str, n=1):
-        try:
-            ret = []
-            words = sentence.split(' ')
-            l = len(words)
+    def replace_sentence(self, sentence:str):
+       
+        words = sentence.split(' ')
 
-            for i in range(n):
-                augmented_sentence=""
-                for j in range(l):
-                    pass
-                
-        except Error as error:
-            print(error)
-            return None
-
+        augmented_sentence=""
+        # select 5 words randomly
+        # there is no random state used while choosing words randomly
+        random_words = random.sample(words, 5)
+        for w in random_words:
+            # there is only one sim_word in list, most similar one
+            sim_words = get_similar_words_trained(w)
+            for s in sim_words:
+                words[w] = s
+        for w in words:
+            augmented_sentence = w + " "
+            
+        return augmented_sentence
+                    
+        
 
     def populate(self, keys, data, target, random, augmentation_per_sentence, text_id="comment_text"):
+        
+        df_list = []
         for key in keys:
             df = data[key]
             diff = target - len(df)
             # select sentences to augment
             if(diff>0):
-                random_comment_selections = df.sample(n=diff, random_state=random)
-                for row in random_comment_selections:
-                    text = row[text_id]
-                    augmentations = self.replace_sentence(text, n=diff)
+                ind = 0
+                new_list = []
+                random_comment_df = df.sample(n=diff, random_state=random)                    
+                while(diff):
+                    if(ind == diff): 
+                        # zero the ind
+                        ind -= ind                    
+                    comment = random_comment_df[ind]
+                    augmented_comment = self.replace_sentence(comment)
+                    df_list.append(comment)
+                    df_list.append(augmented_comment)                    
+                    diff -= 1
+                    ind += 1
+                
+            
             else if(diff<0):
-                df = df[:target]
+                random_comment_df = df.sample(n=target, random_state=random)
+                
+        new_df = pandas.DataFrame(df_list)
+        data[key] = new_df
+                
