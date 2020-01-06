@@ -1,4 +1,5 @@
 import multiprocessing
+import random
 
 import gensim
 import nltk
@@ -194,15 +195,14 @@ class EmbeddingAugmentation(object):
         if diff > 0:
             index = 0
             while diff > 0:
-                if index == diff:
-                    index = 0
-                comment = df.iloc[index][text_id]
+                comment = df.iloc[random.randint(0, len(df))][text_id]
                 augmented_comment = self.augment(comment, random_state=random_state)
                 df_list.append(augmented_comment)
-                diff -= 1
                 index += 1
+                index = index % len(df)
                 df = df.append({'id': 0, text_id: augmented_comment, key: 1}, ignore_index=True)
+                df.drop_duplicates(subset=text_id,
+                                   keep=False, inplace=True)
+                diff = target - len(df)
         df = df.fillna(0)
-        df.drop_duplicates(subset=text_id,
-                           keep=False, inplace=True)
         return df
