@@ -10,10 +10,33 @@ from sklearn.ensemble import AdaBoostClassifier
 
 
 class _Classifier(object):
+    """
+    Base classifier class that implements sklearn models inside.
+
+    Attributes
+        ----------
+        estimator : Sklearn model
+            sklearn model that implements fit and predict
+        name : str
+            Name of the classifier
+        keys : list
+            List of classes
+        accuracies : dict
+            Accuracy dict per each class
+        predictions : dict
+            Predictions dict per each class
+        correct_classifications : dict
+            Number of correct classifications for each class
+        test_sizes : dict
+            Length of each test data size per each class
+    """
     def __init__(self, name, keys=None):
+        """
+        :param name: Name of the classifier
+        :param keys: Classes list
+        """
         self.estimator = None
         self.name = name
-
         self.keys = keys
         self.accuracies = {}
         self.predictions = {}
@@ -21,14 +44,34 @@ class _Classifier(object):
         self.test_sizes = {}
 
     def fit(self, X, y):
+        """
+        Abstraction of sklearn's fit.
+
+        :param X: data
+        :param y: labels
+        :return:
+        """
         self.estimator.fit(X, y)
 
     def predict(self, key, test_X, test_y):
+        """
+        Prediction abstraction of sklearn's predict
+
+        :param key: class name
+        :param test_X: test data
+        :param test_y: test label
+        :return:
+        """
         self.correct_classifications[key] = np.sum(self.predictions[key] == test_y)
         self.accuracies[key] = self.correct_classifications[key] / len(test_y)
         self.test_sizes[key] = len(test_X)
 
     def debug(self, everything=True):
+        """
+        Prints and returns test details.
+        :param everything:
+        :return:
+        """
         summary = ""
         for i, key in enumerate(self.keys):
             summary += "  Category #{}: {} \n".format(i + 1, key)
@@ -44,6 +87,9 @@ class _Classifier(object):
 
 
 class _NonEnsembleClassifier(_Classifier):
+    """
+    Base class for the simple sklearn models, Decision Tree, Naive Bayes and SVM
+    """
     def __init__(self, name):
         super().__init__(name)
 
@@ -92,6 +138,9 @@ class SVM(_NonEnsembleClassifier):
 
 
 class AveragingEstimator(_Classifier):
+    """
+    Given 3 estimators(Decision Tree, Naive Bayes, SVM), returns accuracy average of them.
+    """
     def __init__(self):
         super().__init__("Average of SVM, Naive Bayes and Decision Tree")
         self.estimators = [DecisionTree(), NaiveBayes(), SVM()]
@@ -110,6 +159,9 @@ class AveragingEstimator(_Classifier):
 
 
 class _AdaBoostClassifier(_Classifier):
+    """
+    Base class that uses AdaBoost algorithm with 3 base estimators.
+    """
     def __init__(self, name, n_estimators):
         super().__init__(name)
         self.ensemble = AdaBoostClassifier(base_estimator=self.estimator, n_estimators=n_estimators, algorithm="SAMME")
@@ -141,15 +193,13 @@ class AdaBoostSVM(_AdaBoostClassifier):
         super().__init__("AdaBoost Classifier, SVM with {} estimators".format(n_estimators), n_estimators)
 
 
-class BoostingDecisionTree(_Classifier):
-    def __init__(self, base_estimator: _Classifier):
-        super().__init__("AdaBoost Classifier " + base_estimator.name)
-        self.estimator = base_estimator
-        self.ensemble = AdaBoostClassifier(base_estimator=self.estimator.estimator, n_estimators=100, algorithm="SAMME")
-
-    def fit(self, X, y):
-        self.ensemble.fit(X, y)
-
-    def predict(self, key, test_X, test_y):
-        self.predictions[key] = self.ensemble.predict(test_X)
-        super().predict(key, test_X, test_y)
+# class BoostingDecisionTree(_Classifier): def __init__(self, base_estimator: _Classifier): super().__init__(
+# "AdaBoost Classifier " + base_estimator.name) self.estimator = base_estimator self.ensemble = AdaBoostClassifier(
+# base_estimator=self.estimator.estimator, n_estimators=100, algorithm="SAMME")
+#
+#     def fit(self, X, y):
+#         self.ensemble.fit(X, y)
+#
+#     def predict(self, key, test_X, test_y):
+#         self.predictions[key] = self.ensemble.predict(test_X)
+#         super().predict(key, test_X, test_y)

@@ -4,6 +4,18 @@ import time
 
 
 class Skeleton(object):
+    """
+    Attributes
+        ----------
+        resource : str
+            corpus path
+        model : KeyedVectors
+            Loaded word2vec model
+        vocabulary : dict
+            Vocabulary shortcut of the loaded model
+        trained_model : KeyedVectors
+            Trained word2vec model
+    """
     def __init__(self, keys, random_state):
         self.df_path = ""
         self.df = None
