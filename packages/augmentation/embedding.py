@@ -1,19 +1,43 @@
 import gensim
 import nltk
+import pandas
 from gensim.models import Word2Vec
 from nltk.data import find
 import packages.text.textutilities as utilities
 from gensim.models.phrases import Phrases, Phraser
 import multiprocessing
+from packages.augmentation.random import RandomMachine
 
 
 class EmbeddingAugmentation(object):
+    """
+        A class used to represent an Animal
+
+        ...
+
+        Attributes
+        ----------
+        resource : str
+            a formatted string to print out what the animal says
+        model : KeyedVectors
+            the name of the animal
+        vocabulary : str
+            the sound that the animal makes
+        num_legs : int
+            the number of legs the animal has (default 4)
+
+        Methods
+        -------
+        says(sound=None)
+            Prints the animals name and what sound it makes
+        """
     def __init__(self, load_path=None):
         if load_path is None:
             nltk.download('word2vec_sample')
             self.resource = str(find('models/word2vec_sample/pruned.word2vec.txt'))
             self.model = gensim.models.KeyedVectors.load_word2vec_format(self.resource, binary=False)
         else:
+            print("Loading Custom Model!")
             self.model = Word2Vec.load(load_path)
 
         self.vocabulary = self.model.wv.vocab
@@ -23,10 +47,8 @@ class EmbeddingAugmentation(object):
         try:
             similar = self.model.most_similar(positive=[word], topn=n)
             word_list = []
-
             for w, _ in similar:
                 word_list.append(str(w).lower())
-
             return word_list
 
         except KeyError as key_error:
@@ -86,31 +108,59 @@ class EmbeddingAugmentation(object):
             return
         self.trained_model.save("{}.model".format(name))
 
-    def replace_sentence(self, sentence: str, n=1):
-        try:
-            ret = []
-            words = sentence.split(' ')
-            l = len(words)
-
-            for i in range(n):
-                augmented_sentence=""
-                for j in range(l):
-                    pass
-                
-        except Error as error:
-            print(error)
+    def augment_single(self, sentence: str, random_state=20):
+        randomizer = RandomMachine(random_state=random_state)
+        augmentable_word_count = self._get_augmentable_word_count(sentence)
+        if augmentable_word_count == 0:
             return None
 
+        final_augment = ""
+        for word in sentence.split(' '):
+            if randomizer.pass_chance():
+                similar = self.get_similar_words(word, n=5)
+                if similar is None:
+                    final_augment += word + " "
+                    continue
+                replacement_word = similar[randomizer.gen_random_int(0, len(similar))]
+                final_augment += replacement_word + " "
+            else:
+                final_augment += word + " "
+        return utilities.TextCleaner.clean_sample(final_augment)
+
+    def _get_augmentable_word_count(self, sentence):
+        n = 0
+        for word in sentence.split(' '):
+            try:
+                self.model.wv.most_similar(word)
+                n += 1
+            except KeyError as err:
+                continue
+        return n
 
     def populate(self, keys, data, target, random, augmentation_per_sentence, text_id="comment_text"):
+
+        df_list = []
         for key in keys:
             df = data[key]
             diff = target - len(df)
             # select sentences to augment
-            if(diff>0):
-                random_comment_selections = df.sample(n=diff, random_state=random)
-                for row in random_comment_selections:
-                    text = row[text_id]
-                    augmentations = self.replace_sentence(text, n=diff)
-            else if(diff<0):
-                df = df[:target]
+            if diff > 0:
+                ind = 0
+                new_list = []
+                random_comment_df = df.sample(n=diff, random_state=random)
+                while diff:
+                    if ind == diff:
+                        # zero the ind
+                        ind -= ind
+                    comment = random_comment_df[ind]
+                    augmented_comment = self.augment_single(comment)
+                    df_list.append(comment)
+                    df_list.append(augmented_comment)
+                    diff -= 1
+                    ind += 1
+
+            else:
+                random_comment_df = df.sample(n=target, random_state=random)
+
+            new_df = pandas.DataFrame(df_list)
+            data[key] = new_df
