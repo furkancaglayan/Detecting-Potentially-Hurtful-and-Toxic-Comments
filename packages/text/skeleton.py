@@ -16,6 +16,7 @@ class Skeleton(object):
         trained_model : KeyedVectors
             Trained word2vec model
     """
+
     def __init__(self, keys, random_state):
         self.df_path = ""
         self.df = None
@@ -83,3 +84,14 @@ class Skeleton(object):
         # self.keys[i+3] == 0 & self.keys[i+4] == 0 & self.keys[i+5] == 0 & self.keys[i+6] == 0): info += "{}: {}
         # samples\n".format(self.keys[-1:], len(self.df.loc[self.df[self.keys[:-1]] == 0]))
         return info
+
+    def split_test_train(self, percentage=0.2, samples=None, random_state=20):
+        ret_dict = {}
+        for key in self.keys:
+            df = samples[key]
+            test = df.sample(frac=percentage, replace=True, random_state=random_state)
+            df.drop(labels=test.index, inplace=True)
+            ret_dict[key]['test'] = test
+            ret_dict[key]['train'] = df
+
+        ret_dict
