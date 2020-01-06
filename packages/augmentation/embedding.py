@@ -186,30 +186,23 @@ class EmbeddingAugmentation(object):
                 continue
         return n
 
-    def populate(self, keys, data, target, random, augmentation_per_sentence, text_id="comment_text"):
+    def populate(self, key, data, target, random_state, text_id="comment_text"):
 
         df_list = []
-        for key in keys:
-            df = data[key]
-            diff = target - len(df)
-            # select sentences to augment
-            if diff > 0:
-                ind = 0
-                new_list = []
-                random_comment_df = df.sample(n=diff, random_state=random)
-                while diff:
-                    if ind == diff:
-                        # zero the ind
-                        ind -= ind
-                    comment = random_comment_df[ind]
-                    augmented_comment = self.augment_single(comment)
-                    df_list.append(comment)
-                    df_list.append(augmented_comment)
-                    diff -= 1
-                    ind += 1
-
-            else:
-                random_comment_df = df.sample(n=target, random_state=random)
-
-            new_df = pandas.DataFrame(df_list)
-            data[key] = new_df
+        df = data[key]
+        diff = target - len(df)
+        if diff > 0:
+            index = 0
+            while diff > 0:
+                if index == diff:
+                    index = 0
+                comment = df.iloc[index][text_id]
+                augmented_comment = self.augment(comment, random_state=random_state)
+                df_list.append(augmented_comment)
+                diff -= 1
+                index += 1
+                df = df.append({'id': 0, text_id: augmented_comment, key: 1}, ignore_index=True)
+        df = df.fillna(0)
+        df.drop_duplicates(subset=text_id,
+                           keep=False, inplace=True)
+        return df
