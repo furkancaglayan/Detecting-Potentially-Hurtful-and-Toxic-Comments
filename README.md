@@ -20,13 +20,13 @@ We documented our progress under the publication of [bbm406f19](https://medium.c
 
 [__Week 2__](https://medium.com/bbm406f19/week-2-toxic-overflow-detecting-hateful-comments-2c8ae2ef9ffe): **Review of the related works in the field.** 
 
-[__Week 3__](): **** 
+[__Week 3__](https://medium.com/bbm406f19/week-3-toxic-overflow-detecting-hateful-comments-c29567234000): **** 
 
-[__Week 4__](): **** 
+[__Week 4__](https://medium.com/bbm406f19/week-4-toxic-overflow-detecting-hateful-comments-fadcbd74a704): **** 
 
-[__Week 5__](): **** 
+[__Week 5__](https://medium.com/bbm406f19/week-5-toxic-overflow-detecting-hateful-comments-96e201875d89): **** 
 
-[__Week 6__](): **** 
+[__Week 6__](https://medium.com/bbm406f19/week-6-toxic-overflow-detecting-hateful-comments-777a855a9c01?): **** 
 
 [__Week 7__](): **** 
 
