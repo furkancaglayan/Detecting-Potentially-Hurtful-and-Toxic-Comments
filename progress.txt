@@ -1,0 +1,104 @@
+[Classifier 1/4   Fitting data over Average of SVM, Naive Bayes and Decision Tree...]
+  Category #1: toxic 
+    Accuracy is 0.9029
+    Total correct classifications is 9029
+    Total test data size is 10000
+  Category #2: severe_toxic 
+    Accuracy is 0.9899
+    Total correct classifications is 9899
+    Total test data size is 10000
+  Category #3: obscene 
+    Accuracy is 0.9473
+    Total correct classifications is 9473
+    Total test data size is 10000
+  Category #4: threat 
+    Accuracy is 0.9967
+    Total correct classifications is 9967
+    Total test data size is 10000
+  Category #5: insult 
+    Accuracy is 0.9506
+    Total correct classifications is 9506
+    Total test data size is 10000
+  Category #6: identity_hate 
+    Accuracy is 0.9916
+    Total correct classifications is 9916
+    Total test data size is 10000
+
+[Classifier 2/4   Fitting data over Decision Tree...]
+  Category #1: toxic 
+    Accuracy is 0.9311
+    Total correct classifications is 9311
+    Total test data size is 10000
+  Category #2: severe_toxic 
+    Accuracy is 0.9915
+    Total correct classifications is 9915
+    Total test data size is 10000
+  Category #3: obscene 
+    Accuracy is 0.9734
+    Total correct classifications is 9734
+    Total test data size is 10000
+  Category #4: threat 
+    Accuracy is 0.9984
+    Total correct classifications is 9984
+    Total test data size is 10000
+  Category #5: insult 
+    Accuracy is 0.9652
+    Total correct classifications is 9652
+    Total test data size is 10000
+  Category #6: identity_hate 
+    Accuracy is 0.9936
+    Total correct classifications is 9936
+    Total test data size is 10000
+
+[Classifier 3/4   Fitting data over Naive Bayes...]
+  Category #1: toxic 
+    Accuracy is 0.9137
+    Total correct classifications is 9137
+    Total test data size is 10000
+  Category #2: severe_toxic 
+    Accuracy is 0.9899
+    Total correct classifications is 9899
+    Total test data size is 10000
+  Category #3: obscene 
+    Accuracy is 0.9507
+    Total correct classifications is 9507
+    Total test data size is 10000
+  Category #4: threat 
+    Accuracy is 0.9967
+    Total correct classifications is 9967
+    Total test data size is 10000
+  Category #5: insult 
+    Accuracy is 0.9507
+    Total correct classifications is 9507
+    Total test data size is 10000
+  Category #6: identity_hate 
+    Accuracy is 0.9916
+    Total correct classifications is 9916
+    Total test data size is 10000
+
+[Classifier 4/4   Fitting data over SVM...]
+  Category #1: toxic 
+    Accuracy is 0.9029
+    Total correct classifications is 9029
+    Total test data size is 10000
+  Category #2: severe_toxic 
+    Accuracy is 0.9899
+    Total correct classifications is 9899
+    Total test data size is 10000
+  Category #3: obscene 
+    Accuracy is 0.9473
+    Total correct classifications is 9473
+    Total test data size is 10000
+  Category #4: threat 
+    Accuracy is 0.9967
+    Total correct classifications is 9967
+    Total test data size is 10000
+  Category #5: insult 
+    Accuracy is 0.9506
+    Total correct classifications is 9506
+    Total test data size is 10000
+  Category #6: identity_hate 
+    Accuracy is 0.9916
+    Total correct classifications is 9916
+    Total test data size is 10000
+
