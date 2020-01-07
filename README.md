@@ -15,7 +15,7 @@ different classifiers by extending scripts/classification/_Classifier. Just make
 are correctly implemented.
 
 
-## 2. Blogs
+## 3. Blogs
 We documented our progress under the publication of [bbm406f19](https://medium.com/bbm406f19) on medium. You can read them to see our thinking processes. Don't forget to give claps :innocent:
 
 
@@ -40,7 +40,7 @@ We documented our progress under the publication of [bbm406f19](https://medium.c
 
 
 
-## 3.Dataset
+## 4.Dataset
 We decided to use Wikipedia comments that was used in [Toxic Comment Classification Challenge](https://www.kaggle.com/c/jigsaw-toxic-comment-classification-challenge/data). Dataset has the following labels:
 
 - toxic
@@ -62,5 +62,5 @@ We decided to use Wikipedia comments that was used in [Toxic Comment Classificat
 
 
 
-## 4.License
+## 5.License
 This work is licensed under [MIT license](https://github.com/furkancaglayan/Detecting-Potentially-Hurtful-and-Toxic-Comments/blob/master/LICENSE).
