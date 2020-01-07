@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from packages.text.textutilities import load_data
+from scripts.text.textutilities import load_data
 import time
 
 

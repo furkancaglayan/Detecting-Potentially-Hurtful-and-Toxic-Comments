@@ -8,8 +8,8 @@ from gensim.models import Word2Vec
 from gensim.models.phrases import Phrases
 from nltk.data import find
 
-import packages.text.textutilities as utilities
-from packages.augmentation.random import RandomMachine
+import scripts.text.textutilities as utilities
+from scripts.augmentation.random import RandomMachine
 
 
 class EmbeddingAugmentation(object):
