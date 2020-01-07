@@ -160,6 +160,8 @@ class EmbeddingAugmentation(object):
 
         final_augment = ""
         for word in sentence.split(' '):
+            if word not in self.vocabulary:
+                continue
             if randomizer.pass_chance():
                 similar = self.get_similar_words(word, n=5)
                 if similar is None:
@@ -180,6 +182,8 @@ class EmbeddingAugmentation(object):
         """
         n = 0
         for word in sentence.split(' '):
+            if word is '' or word is ' ':
+                continue
             try:
                 self.model.wv.most_similar(word)
                 n += 1
@@ -195,14 +199,17 @@ class EmbeddingAugmentation(object):
         if diff > 0:
             index = 0
             while diff > 0:
-                comment = df.iloc[random.randint(0, len(df))][text_id]
-                augmented_comment = self.augment(comment, random_state=random_state)
+                comment = df.iloc[random.randint(0, len(df) - 1)][text_id]
+                augmented_comment = self.augment(str(comment), random_state=random_state)
                 df_list.append(augmented_comment)
                 index += 1
                 index = index % len(df)
                 df = df.append({'id': 0, text_id: augmented_comment, key: 1}, ignore_index=True)
-                df.drop_duplicates(subset=text_id,
-                                   keep=False, inplace=True)
+                if diff == 10:
+                    df.drop_duplicates(subset=text_id,
+                                       keep=False, inplace=True)
+                if len(df) > 0 and len(df) % 500 == 0:
+                    print("{} data for the key {}".format(len(df), key))
                 diff = target - len(df)
         df = df.fillna(0)
         return df

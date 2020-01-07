@@ -1,4 +1,7 @@
+import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
+
 from packages.text.textutilities import load_data
 import time
 
@@ -46,19 +49,17 @@ class Skeleton(object):
         self.data_size = len(self.df)
         print("Skeleton build is done!")
 
-    def classify(self, classifiers):
+    def classify(self, classifiers, X_x, X_y, y_x, y_y):
         self.classifiers = classifiers
 
-        X = self.df[self.column_name]
         for i, clf in enumerate(self.classifiers):
             clf.keys = self.keys
             print("[Classifier {}/{}   Fitting data over {}...]".format(i + 1, len(self.classifiers), clf.name))
             self.progress += "[Classifier {}/{}   Fitting data over {}...]\n".format(i + 1, len(self.classifiers),
                                                                                      clf.name)
             for key in self.keys:
-                y = self.df[key]
-                clf.fit(X, y)
-                clf.predict(key, X, self.df[key])
+                clf.fit(X_x, X_y)
+                clf.predict(key, y_x[key], y_y[key])
             self.progress += clf.debug()
 
     def save_progress(self, path):
@@ -70,28 +71,32 @@ class Skeleton(object):
     def split_by_keys(self, n_category):
         df_splits = {}
         for each_key in self.keys:
-            n = n_category if len(self.df[self.df[each_key] == 1]) >= n_category else len(
-                self.df[self.df[each_key] == 1])
+            n = int(n_category / 2) if len(self.df[self.df[each_key] == 1]) >= n_category else int(
+                len(self.df[self.df[each_key] == 1]) / 2)
             df_splits[each_key] = self.df[self.df[each_key] == 1].sample(n=n, random_state=self.random_state)
+            non = (self.df[self.df[each_key] == 0].sample(n=n, random_state=self.random_state))
+            df_splits[each_key] =df_splits[each_key].append(non,ignore_index=True)
         return df_splits
 
     def info(self):
         info = ""
         for key in self.keys:
-            print(key)
             info += "{}: {} samples\n".format(key, len(self.df.loc[self.df[key] == 1]))
         # for i in range(len(self.keys[-1:]): if(self.keys[i] == 0 & self.keys[i+1] == 0 & self.keys[i+2] == 0 &
         # self.keys[i+3] == 0 & self.keys[i+4] == 0 & self.keys[i+5] == 0 & self.keys[i+6] == 0): info += "{}: {}
         # samples\n".format(self.keys[-1:], len(self.df.loc[self.df[self.keys[:-1]] == 0]))
-        return info
+        print(info)
 
-    def split_test_train(self, percentage=0.2, samples=None, random_state=20):
-        ret_dict = {}
-        for key in self.keys:
-            df = samples[key]
-            test = df.sample(frac=percentage, replace=True, random_state=random_state)
-            df.drop(labels=test.index, inplace=True)
-            ret_dict[key]['test'] = test
-            ret_dict[key]['train'] = df
-
-        ret_dict
+    # def split_test_train(self,key, percentage=0.2, samples=None, random_state=20):
+    #     ret_dict = {}
+    #     df = samples[key]
+    #     X_train, X_test, y_train, y_test = train_test_split(
+    #         ...
+    #     X, y, test_size = 0.33, random_state = 42)
+    #     test_indices=np.random.choice(int(len(df)*percentage))
+    #     test = df.sample(frac=percentage, replace=False, random_state=random_state)
+    #     df.drop(labels=test.index, inplace=True)
+    #     ret_dict['test'] = test
+    #     ret_dict['train'] = df
+    #
+    #     return ret_dict

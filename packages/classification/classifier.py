@@ -30,6 +30,7 @@ class _Classifier(object):
         test_sizes : dict
             Length of each test data size per each class
     """
+
     def __init__(self, name, keys=None):
         """
         :param name: Name of the classifier
@@ -90,6 +91,7 @@ class _NonEnsembleClassifier(_Classifier):
     """
     Base class for the simple sklearn models, Decision Tree, Naive Bayes and SVM
     """
+
     def __init__(self, name):
         super().__init__(name)
 
@@ -141,6 +143,7 @@ class AveragingEstimator(_Classifier):
     """
     Given 3 estimators(Decision Tree, Naive Bayes, SVM), returns accuracy average of them.
     """
+
     def __init__(self):
         super().__init__("Average of SVM, Naive Bayes and Decision Tree")
         self.estimators = [DecisionTree(), NaiveBayes(), SVM()]
@@ -162,36 +165,49 @@ class _AdaBoostClassifier(_Classifier):
     """
     Base class that uses AdaBoost algorithm with 3 base estimators.
     """
-    def __init__(self, name, n_estimators):
+
+    def __init__(self, name, estimator):
         super().__init__(name)
-        self.ensemble = AdaBoostClassifier(base_estimator=self.estimator, n_estimators=n_estimators, algorithm="SAMME")
+        self.estimator = estimator
 
     def fit(self, X, y):
-        self.ensemble.fit(TfidfVectorizer(stop_words=ENGLISH_STOP_WORDS).fit_transform(X), y)
+        self.estimator.fit(X, y)
 
     def predict(self, key, test_X, test_y):
-        self.predictions[key] = self.ensemble.predict(TfidfVectorizer(stop_words=ENGLISH_STOP_WORDS).fit_transform(
-            test_X))
+        self.predictions[key] = self.estimator.predict(test_X)
         super().predict(key, test_X, test_y)
 
 
 class AdaBoostDecisionTree(_AdaBoostClassifier):
-    def __init__(self, max_tree_depth=4, n_estimators=100):
-        self.estimator = DecisionTreeClassifier(max_depth=max_tree_depth)
-        super().__init__("AdaBoost Classifier, Decision Tree with {} estimators".format(n_estimators), n_estimators)
+    def __init__(self, max_tree_depth=8, n_estimators=100):
+        clf_base = AdaBoostClassifier(
+            DecisionTreeClassifier(max_depth=max_tree_depth),
+            n_estimators=n_estimators, learning_rate=0.5
+        )
+        clf = Pipeline([
+            ('vectorizer', TfidfVectorizer(stop_words=ENGLISH_STOP_WORDS)),
+            ('clf', clf_base),
+        ], verbose=False)
+        super().__init__("AdaBoost Classifier, Decision Tree with {} estimators".format(n_estimators), clf)
 
 
 class AdaBoostNaiveBayes(_AdaBoostClassifier):
     def __init__(self, n_estimators=100):
-        self.estimator = MultinomialNB(fit_prior=True, class_prior=None)
-        super().__init__("AdaBoost Classifier, MN Naive Bayes with {} estimators".format(n_estimators), n_estimators)
+        clf_base = AdaBoostClassifier(
+            MultinomialNB(fit_prior=True, class_prior=None),
+            n_estimators=n_estimators, learning_rate=0.5
+        )
+        clf = Pipeline([
+            ('vectorizer', TfidfVectorizer(stop_words=ENGLISH_STOP_WORDS)),
+            ('clf', clf_base),
+        ], verbose=False)
+        super().__init__("AdaBoost Classifier, MN Naive Bayes with {} estimators".format(n_estimators), clf)
 
 
 class AdaBoostSVM(_AdaBoostClassifier):
     def __init__(self, n_estimators=100):
         self.estimator = SVC(gamma='auto')
         super().__init__("AdaBoost Classifier, SVM with {} estimators".format(n_estimators), n_estimators)
-
 
 # class BoostingDecisionTree(_Classifier): def __init__(self, base_estimator: _Classifier): super().__init__(
 # "AdaBoost Classifier " + base_estimator.name) self.estimator = base_estimator self.ensemble = AdaBoostClassifier(
