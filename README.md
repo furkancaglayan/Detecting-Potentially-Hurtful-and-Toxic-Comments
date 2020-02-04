@@ -1,6 +1,8 @@
 # Toxic Overflow: Detecting Hateful Comments
 __Contributers:__ [Nur Bengisu Cam](https://github.com/bengisucam "GitHub"), [Furkan Caglayan](https://github.com/furkancaglayan "GitHub"), Ahmet Burak Kahraman
 
+***You can view the paper and the presentation of the project***
+
 ## 1. Introduction
 In this project we tried to see if we can identify toxic comments and insult by using Machine Learning  algorithms.
 We implemented Naive Bayes, Decision Tree, SVC and AdaBoost algorithms. We also examined the effects of word2vec based text augmentation.
